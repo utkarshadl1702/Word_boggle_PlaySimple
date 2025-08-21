@@ -1452,6 +1452,7 @@ GameObject:
   - component: {fileID: 1955729347}
   - component: {fileID: 1955729346}
   - component: {fileID: 1955729345}
+  - component: {fileID: 1955729350}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -1539,6 +1540,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1955729350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955729344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9747f258bb5344cc088e0df0029c9a85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wordFormed: 
 --- !u!1 &2016262329
 GameObject:
   m_ObjectHideFlags: 0
@@ -1549,6 +1563,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2016262330}
   - component: {fileID: 2016262331}
+  - component: {fileID: 2016262332}
   m_Layer: 5
   m_Name: LetterGrid
   m_TagString: Untagged
@@ -1589,11 +1604,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 4
   height: 4
-  spacing: 1.2
-  origin: {x: -2, y: -2}
-  tilePrefab: {fileID: 4525547328811124393, guid: 548031849138e4c8a8e4cfb1a98771cc, type: 3}
+  cellPrefab: {fileID: 6849207466271886690, guid: 548031849138e4c8a8e4cfb1a98771cc, type: 3}
   allowedLetters: EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ
   useFrequencyBag: 1
+--- !u!114 &2016262332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016262329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 100, y: 100}
+  m_Spacing: {x: 0, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

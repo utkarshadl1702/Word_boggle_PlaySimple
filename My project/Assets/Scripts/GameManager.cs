@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour
     public GridManager grid;
     public WordManager wordManager;
     public UIManager ui;
-    public LevelLoader levelLoader;
+    // public LevelLoader levelLoader;
+    public WordDragManager wordDragManager; // Add this reference
 
     [Header("Mode")]
     public GameMode mode = GameMode.Endless;
@@ -23,10 +24,6 @@ public class GameManager : MonoBehaviour
     private LevelData currentLevel;
     private float levelTimer;
     private bool levelActive;
-
-    // Drag selection state
-    private readonly List<LetterTile> currentPath = new();
-    private HashSet<LetterTile> inPath = new();
 
     private Camera cam;
 
@@ -43,7 +40,6 @@ public class GameManager : MonoBehaviour
         ui.ResetStats();
         grid.BuildEmptyGrid(endlessWidth, endlessHeight);
         levelActive = false;
-        currentPath.Clear(); inPath.Clear();
     }
 
     public void StartLevel()
@@ -52,19 +48,18 @@ public class GameManager : MonoBehaviour
         ui.SetMode(false);
         ui.ResetStats();
 
-        currentLevel = levelLoader != null ? levelLoader.Load() : null;
+        // currentLevel = levelLoader != null ? levelLoader.Load() : null;
         if (currentLevel == null)
         {
             Debug.LogError("No level data.");
             return;
         }
 
-        grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y);
-        ui.SetObjective(LevelLogic.Describe(currentLevel));
+        // grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y);
+        // ui.SetObjective(LevelLogic.Describe(currentLevel));
 
         levelTimer = currentLevel.timeSec > 0 ? currentLevel.timeSec : 0f;
         levelActive = true;
-        currentPath.Clear(); inPath.Clear();
     }
 
     private void Update()
@@ -76,130 +71,6 @@ public class GameManager : MonoBehaviour
             if (levelTimer < 0) levelTimer = 0;
             ui.SetTimer(levelTimer);
             if (levelTimer <= 0) CheckLevelEnd();
-        }
-
-        HandleInput();
-    }
-
-    private void HandleInput()
-    {
-        // Ignore when pointer over UI
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            BeginSelection();
-        }
-        if (Input.GetMouseButton(0))
-        {
-            ContinueSelection(ScreenToWorld(Input.mousePosition));
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            EndSelection();
-        }
-
-#if UNITY_ANDROID || UNITY_IOS
-        if (Input.touchCount > 0)
-        {
-            var t = Input.GetTouch(0);
-            if (t.phase == TouchPhase.Began) BeginSelection();
-            if (t.phase == TouchPhase.Moved || t.phase == TouchPhase.Stationary) ContinueSelection(ScreenToWorld(t.position));
-            if (t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled) EndSelection();
-        }
-#endif
-    }
-
-    private Vector3 ScreenToWorld(Vector3 screenPos)
-    {
-        var p = cam.ScreenToWorldPoint(screenPos);
-        p.z = 0;
-        return p;
-    }
-
-    private void BeginSelection()
-    {
-        currentPath.Clear();
-        inPath.Clear();
-        ui.SetCurrentWord("");
-        TryAddTileAt(ScreenToWorld(Input.mousePosition));
-    }
-
-    private void ContinueSelection(Vector3 world)
-    {
-        TryAddTileAt(world);
-        ui.SetCurrentWord(BuildWord(currentPath));
-    }
-
-    private void EndSelection()
-    {
-        string word = BuildWord(currentPath);
-        bool usedBonus = currentPath.Exists(t => t.Type == TileType.Bonus);
-
-        if (wordManager.IsValid(word))
-        {
-            int add = wordManager.ScoreWord(word, usedBonus);
-            ui.AddWordScore(add);
-
-            if (mode == GameMode.Endless)
-            {
-                grid.RemoveAndRefill(currentPath);
-            }
-            else // Levels: static grid; apply special rules
-            {
-                if (usedBonus && currentLevel != null && currentLevel.bugCount > 0)
-                {
-                    // Simple count-down of required bonuses if you want to track it
-                    currentLevel.bugCount = Mathf.Max(0, currentLevel.bugCount - 1);
-                }
-                // Unblock rocks adjacent to word path
-                grid.UnblockAdjacentsToPath(currentPath);
-                CheckLevelEnd();
-            }
-        }
-
-        currentPath.Clear();
-        inPath.Clear();
-        ui.SetCurrentWord("");
-    }
-
-    private string BuildWord(List<LetterTile> path)
-    {
-        System.Text.StringBuilder sb = new();
-        foreach (var t in path) sb.Append(t.Letter);
-        return sb.ToString();
-    }
-
-    private void TryAddTileAt(Vector3 world)
-    {
-        // Raycast for 2D colliders
-        var hit = Physics2D.OverlapPoint(world);
-        if (!hit) return;
-
-        var tile = hit.GetComponent<LetterTile>();
-        if (tile == null || !tile.IsSelectable) return;
-
-        if (currentPath.Count == 0)
-        {
-            currentPath.Add(tile);
-            inPath.Add(tile);
-            return;
-        }
-
-        var last = currentPath[currentPath.Count - 1];
-
-        // Allow backtracking one step (undo) if dragging over previous tile
-        if (currentPath.Count >= 2 && tile == currentPath[currentPath.Count - 2])
-        {
-            inPath.Remove(last);
-            currentPath.RemoveAt(currentPath.Count - 1);
-            return;
-        }
-
-        if (!inPath.Contains(tile) && grid.AreAdjacent(last, tile))
-        {
-            currentPath.Add(tile);
-            inPath.Add(tile);
         }
     }
 
@@ -235,6 +106,26 @@ public class GameManager : MonoBehaviour
     {
         levelActive = false;
         ui.SetObjective("Time Up!");
+    }
+
+    public void ProcessWord(string word)
+    {
+        if (wordManager.IsValid(word))
+        {
+            bool usedBonus = false; // Implement bonus detection if needed
+            int score = wordManager.ScoreWord(word, usedBonus);
+            ui.AddWordScore(score);
+
+            // Check level completion after each valid word
+            if (mode == GameMode.Levels && levelActive)
+            {
+                CheckLevelEnd();
+            }
+            print($"Word '{word}' scored {score} points.");
+        }
+
+        // Update UI with current word
+        ui.SetCurrentWord(word);
     }
 
     // Menu hooks

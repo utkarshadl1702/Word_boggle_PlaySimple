@@ -13,6 +13,8 @@ public class LetterTile : MonoBehaviour
     [SerializeField] private TileType tileType = TileType.Normal;
     [SerializeField] private TMP_Text LetterText;
 
+
+
     // Grid coordinates managed by GridManager
     public int X { get; set; }
     public int Y { get; set; }
@@ -34,7 +36,7 @@ public class LetterTile : MonoBehaviour
     public void Init(int x, int y, char c, TileType type = TileType.Normal)
     {
         X = x; Y = y; Letter = c; Type = type; LetterText.text = Letter.ToString();
-
+        GetComponent<GridCell>().letter = Letter.ToString();
         UpdateVisual();
     }
 

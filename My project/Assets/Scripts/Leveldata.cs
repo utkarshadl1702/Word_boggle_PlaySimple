@@ -23,17 +23,3 @@ public class LevelTile
     public int tileType; // 0=Normal,1=Blocked,2=Bonus
     public string letter;
 }
-
-public static class LevelLogic
-{
-    public static string Describe(LevelData d)
-    {
-        return d.levelType switch
-        {
-            LevelType.MakeXWords => $"Make {d.wordCount} words",
-            LevelType.ReachScoreInTime => $"Reach {d.totalScore} score in {d.timeSec}s",
-            LevelType.MakeXWordsInTime => $"Make {d.wordCount} words in {d.timeSec}s",
-            _ => "Objective"
-        };
-    }
-}

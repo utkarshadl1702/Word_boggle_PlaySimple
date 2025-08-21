@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
     [Header("Grid")]
     public int width = 4;
     public int height = 4;
-    public float spacing = 1.2f;
-    public Vector2 origin = new Vector2(-2f, -2f);
-
+    
     [Header("Prefabs")]
-    public LetterTile tilePrefab;
+    public GameObject cellPrefab;
 
     [Header("Letter Generation")]
     [Tooltip("If empty, random A–Z. Optionally use frequency-biased letters.")]
@@ -19,59 +18,59 @@ public class GridManager : MonoBehaviour
 
     private LetterTile[,] grid;
     public LetterTile[,] Grid => grid;
+    private GridLayoutGroup gridLayout;
+    private RectTransform rectTransform;
 
-    public System.Func<char> GetRandomLetter; // injectable by GameManager if needed
+    public System.Func<char> GetRandomLetter;
 
     private void Awake()
     {
         GetRandomLetter ??= DefaultRandomLetter;
-        // Center the grid by calculating the origin based on width and height
-        origin = new Vector2(
-            -(width * spacing) / 2f,
-            -(height * spacing) / 2f
-        );
+        gridLayout = GetComponent<GridLayoutGroup>();
+        rectTransform = GetComponent<RectTransform>();
+        
+        // Set up grid layout properties
+        float panelWidth = rectTransform.rect.width;
+        float panelHeight = rectTransform.rect.height;
+        float cellWidth = panelWidth / width;
+        float cellHeight = panelHeight / height;
+        gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
     }
 
     public void BuildEmptyGrid(int w, int h)
     {
         ClearGrid();
-        width = w; height = h;
+        width = w; 
+        height = h;
         grid = new LetterTile[width, height];
 
-        for (int x = 0; x < width; x++)
         for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
         {
-            var tile = Instantiate(tilePrefab, CellToWorld(x, y), Quaternion.identity, transform);
+            var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
             char c = GetRandomLetter();
             tile.Init(x, y, c, TileType.Normal);
             grid[x, y] = tile;
         }
     }
 
-    public void LoadStaticGrid(LevelTile[] data, int w, int h)
-    {
-        ClearGrid();
-        width = w; height = h;
-        grid = new LetterTile[width, height];
+    // public void LoadStaticGrid(LevelTile[] data, int w, int h)
+    // {
+    //     ClearGrid();
+    //     width = w; 
+    //     height = h;
+    //     grid = new LetterTile[width, height];
 
-        int i = 0;
-        for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
-        {
-            var tile = Instantiate(tilePrefab, CellToWorld(x, y), Quaternion.identity, transform);
-            var d = data[i++];
-            tile.Init(x, y, d.letter[0], (TileType)d.tileType);
-            grid[x, y] = tile;
-        }
-    }
-
-    public Vector3 CellToWorld(int x, int y)
-    {
-        // Apply proper spacing between tiles
-        float xPos = origin.x + (x * spacing);
-        float yPos = origin.y + (y * spacing);
-        return new Vector3(xPos, yPos, 0);
-    }
+    //     int i = 0;
+    //     for (int y = 0; y < height; y++)
+    //     for (int x = 0; x < width; x++)
+    //     {
+    //         var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
+    //         var d = data[i++];
+    //         tile.Init(x, y, d.letter[0], (TileType)d.tileType);
+    //         grid[x, y] = tile;
+    //     }
+    // }
 
     public bool AreAdjacent(LetterTile a, LetterTile b)
     {
@@ -80,7 +79,6 @@ public class GridManager : MonoBehaviour
         return (dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0));
     }
 
-    // Remove selected tiles (set to null), then collapse columns and refill
     public void RemoveAndRefill(List<LetterTile> tilesToRemove)
     {
         foreach (var t in tilesToRemove)
@@ -106,15 +104,14 @@ public class GridManager : MonoBehaviour
                         grid[x, y] = null;
                         grid[x, writeY] = tile;
                         tile.Y = writeY;
-                        tile.transform.position = CellToWorld(x, writeY);
                     }
                     writeY++;
                 }
             }
-            // Fill new from top
+            // Fill new tiles
             for (int y = writeY; y < height; y++)
             {
-                var tile = Instantiate(tilePrefab, CellToWorld(x, y), Quaternion.identity, transform);
+                var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
                 tile.Init(x, y, GetRandomLetter(), TileType.Normal);
                 grid[x, y] = tile;
             }
@@ -140,7 +137,7 @@ public class GridManager : MonoBehaviour
             var tile = grid[x, y];
             if (tile != null && tile.Type == TileType.Blocked)
             {
-                tile.Type = TileType.Normal; // unblocked
+                tile.Type = TileType.Normal;
             }
         }
     }
