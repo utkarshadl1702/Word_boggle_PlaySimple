@@ -1,5 +1,11 @@
 using System;
-using UnityEngine;
+using System.Collections.Generic;
+
+[Serializable]
+public class LevelDataContainer
+{
+    public List<LevelData> data;
+}
 
 [Serializable]
 public class LevelData
@@ -8,18 +14,32 @@ public class LevelData
     public int wordCount;
     public int timeSec;
     public int totalScore;
-    public Vector2Int gridSize;
-    public LevelTile[] gridData;
-
-    // Type of win condition (derived):
-    public LevelType levelType; // MakeXWords, ReachScoreInTime, MakeXWordsInTime
+    public GridSize gridSize;
+    public int levelType;
+    public List<LevelTile> gridData;
 }
 
-public enum LevelType { MakeXWords = 0, ReachScoreInTime = 1, MakeXWordsInTime = 2 }
+[Serializable]
+public class GridSize
+{
+    public int x;
+    public int y;
+}
 
 [Serializable]
 public class LevelTile
 {
-    public int tileType; // 0=Normal,1=Blocked,2=Bonus
     public string letter;
+    public int tileType;
+}
+
+public enum LevelType 
+{ 
+    MakeXWords = 0, 
+    ReachScoreInTime = 1, 
+    MakeXWordsInTime = 2,
+    BugCatch = 3,
+    BlockedTiles = 4,
+    TimedScore = 5,
+    TimedWordsAndScore = 7
 }

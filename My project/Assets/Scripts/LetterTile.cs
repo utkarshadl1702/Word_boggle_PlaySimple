@@ -53,4 +53,27 @@ public class LetterTile : MonoBehaviour
         }
         // Optional: show letter via TextMeshPro child if your prefab has it.
     }
+
+    public void ResetCell()
+    {
+        // Reset visual elements
+        if (blockedSprite) blockedSprite.SetActive(false);
+        if (bugSprite) bugSprite.SetActive(false);
+
+        // Reset type to normal
+        tileType = TileType.Normal;
+
+        // Reset letter text
+        if (LetterText) LetterText.text = "";
+
+        // Reset grid position
+        X = 0;
+        Y = 0;
+
+        // Reset letter
+        letter = 'A';
+
+        // Reset name
+        name = "Tile_Reset";
+    }
 }

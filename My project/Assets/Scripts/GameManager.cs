@@ -26,11 +26,38 @@ public class GameManager : MonoBehaviour
     private bool levelActive;
 
     private Camera cam;
+    private LevelDataContainer levelDataContainer;
+    private int currentLevelIndex = 0;
 
     private void Start()
     {
         cam = Camera.main;
-        StartEndless(); // default
+        // StartEndless(); // default
+        //random number from 0-maxlevels
+        // if (levelDataContainer != null && levelDataContainer.data.Count > 0)
+        //     StartLevel(Random.Range(0, levelDataContainer.data.Count));
+
+        // StartEndless();
+        
+    }
+
+    private void Awake()
+    {
+        LoadLevelData();
+    }
+
+    private void LoadLevelData()
+    {
+        TextAsset jsonFile = Resources.Load<TextAsset>("test-unity-master-Assets/Assets/levelData");
+        if (jsonFile != null)
+        {
+            levelDataContainer = JsonUtility.FromJson<LevelDataContainer>(jsonFile.text);
+            Debug.Log($"Loaded {levelDataContainer.data.Count} levels");
+        }
+        else
+        {
+            Debug.LogError("Could not load level data!");
+        }
     }
 
     public void StartEndless()
@@ -42,24 +69,53 @@ public class GameManager : MonoBehaviour
         levelActive = false;
     }
 
-    public void StartLevel()
+    public void StartLevel(int levelIndex = 0)
     {
+        if (levelDataContainer == null || levelIndex >= levelDataContainer.data.Count)
+        {
+            Debug.LogError("Invalid level index or no level data!");
+            return;
+        }
+
         mode = GameMode.Levels;
         ui.SetMode(false);
         ui.ResetStats();
 
-        // currentLevel = levelLoader != null ? levelLoader.Load() : null;
-        if (currentLevel == null)
-        {
-            Debug.LogError("No level data.");
-            return;
-        }
+        currentLevel = levelDataContainer.data[levelIndex];
+        currentLevelIndex = levelIndex;
 
-        // grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y);
-        // ui.SetObjective(LevelLogic.Describe(currentLevel));
+        // Load the grid with level data
+        grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y);
+        
+        // Set UI objective based on level type
+        string objective = GetLevelObjective(currentLevel);
+        ui.SetObjective(objective);
 
         levelTimer = currentLevel.timeSec > 0 ? currentLevel.timeSec : 0f;
         levelActive = true;
+    }
+
+    private string GetLevelObjective(LevelData level)
+    {
+        switch((LevelType)level.levelType)
+        {
+            case LevelType.MakeXWords:
+                return $"Make {level.wordCount} words";
+            case LevelType.ReachScoreInTime:
+                return $"Score {level.totalScore} points in {level.timeSec}s";
+            case LevelType.MakeXWordsInTime:
+                return $"Make {level.wordCount} words in {level.timeSec}s";
+            case LevelType.BugCatch:
+                return $"Catch {level.bugCount} bugs";
+            case LevelType.BlockedTiles:
+                return $"Clear {level.wordCount} words with blocked tiles";
+            case LevelType.TimedScore:
+                return $"Score as much as possible in {level.timeSec}s";
+            case LevelType.TimedWordsAndScore:
+                return $"Score {level.totalScore} in {level.timeSec}s";
+            default:
+                return "Complete the level";
+        }
     }
 
     private void Update()
@@ -79,19 +135,58 @@ public class GameManager : MonoBehaviour
         if (currentLevel == null) return;
 
         bool timeUp = currentLevel.timeSec > 0 && levelTimer <= 0;
+        int wordsCount = ui.GetWordsCount();
+        int totalScore = ui.GetTotalScore();
 
-        switch (currentLevel.levelType)
+        switch ((LevelType)currentLevel.levelType)
         {
             case LevelType.MakeXWords:
-                if (ui.GetWordsCount() >= currentLevel.wordCount) LevelWin();
+                if (wordsCount >= currentLevel.wordCount) 
+                    LevelWin();
                 break;
+
             case LevelType.ReachScoreInTime:
-                if (ui.GetTotalScore() >= currentLevel.totalScore) LevelWin();
-                else if (timeUp) LevelFail();
+                if (totalScore >= currentLevel.totalScore) 
+                    LevelWin();
+                else if (timeUp) 
+                    LevelFail();
                 break;
+
             case LevelType.MakeXWordsInTime:
-                if (ui.GetWordsCount() >= currentLevel.wordCount) LevelWin();
-                else if (timeUp) LevelFail();
+                if (wordsCount >= currentLevel.wordCount) 
+                    LevelWin();
+                else if (timeUp) 
+                    LevelFail();
+                break;
+
+            // case LevelType.BugCatch:
+            //     // Assuming you have a method to track caught bugs
+            //     if (ui.GetBugsCaught() >= currentLevel.bugCount)
+            //         LevelWin();
+            //     break;
+
+            case LevelType.BlockedTiles:
+                if (wordsCount >= currentLevel.wordCount)
+                    LevelWin();
+                break;
+
+            case LevelType.TimedScore:
+                if (timeUp)
+                {
+                    // For timed score, any score is valid, just end the level
+                    LevelWin();
+                    ui.SetObjective($"Final Score: {totalScore}");
+                }
+                break;
+
+            case LevelType.TimedWordsAndScore:
+                if (timeUp)
+                {
+                    if (totalScore >= currentLevel.totalScore)
+                        LevelWin();
+                    else
+                        LevelFail();
+                }
                 break;
         }
     }
@@ -131,4 +226,10 @@ public class GameManager : MonoBehaviour
     // Menu hooks
     public void OnClick_Endless() => StartEndless();
     public void OnClick_Levels() => StartLevel();
+
+    // Add method to go to next level
+    public void NextLevel()
+    {
+        StartLevel(currentLevelIndex + 1);
+    }
 }

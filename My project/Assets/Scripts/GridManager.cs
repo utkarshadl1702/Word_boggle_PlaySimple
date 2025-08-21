@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,23 +55,32 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    // public void LoadStaticGrid(LevelTile[] data, int w, int h)
-    // {
-    //     ClearGrid();
-    //     width = w; 
-    //     height = h;
-    //     grid = new LetterTile[width, height];
+    public void LoadStaticGrid(List<LevelTile> data, int w, int h)
+    {
+        ClearGrid();
+        width = w;
+        height = h;
+        grid = new LetterTile[width, height];
 
-    //     int i = 0;
-    //     for (int y = 0; y < height; y++)
-    //     for (int x = 0; x < width; x++)
-    //     {
-    //         var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
-    //         var d = data[i++];
-    //         tile.Init(x, y, d.letter[0], (TileType)d.tileType);
-    //         grid[x, y] = tile;
-    //     }
-    // }
+        // Update grid layout properties
+        float panelWidth = rectTransform.rect.width;
+        float panelHeight = rectTransform.rect.height;
+        float cellWidth = panelWidth / width;
+        float cellHeight = panelHeight / height;
+        gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
+
+        int i = 0;
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            if (i >= data.Count) break;
+            
+            var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
+            var d = data[i++];
+            tile.Init(x, y, d.letter[0], (TileType)d.tileType);
+            grid[x, y] = tile;
+        }
+    }
 
     public bool AreAdjacent(LetterTile a, LetterTile b)
     {
@@ -81,42 +91,67 @@ public class GridManager : MonoBehaviour
 
     public void RemoveAndRefill(List<LetterTile> tilesToRemove)
     {
-        foreach (var t in tilesToRemove)
+        print("Removing and refilling tiles...");
+        // Step 1: Mark tiles for removal
+        foreach (var tile in tilesToRemove)
         {
-            if (grid[t.X, t.Y] == t)
+            if (grid[tile.X, tile.Y] == tile)
             {
-                Destroy(t.gameObject);
-                grid[t.X, t.Y] = null;
+                Destroy(tile.gameObject);
+                grid[tile.X, tile.Y] = null;
             }
         }
 
-        // Collapse per column
+        // Step 2: Process each column independently
         for (int x = 0; x < width; x++)
         {
-            int writeY = 0;
+            // Find empty spaces and shift tiles down
             for (int y = 0; y < height; y++)
             {
-                if (grid[x, y] != null)
+                if (grid[x, y] == null)
                 {
-                    if (y != writeY)
+                    // Find the next non-null tile above
+                    for (int above = y + 1; above < height; above++)
                     {
-                        var tile = grid[x, y];
-                        grid[x, y] = null;
-                        grid[x, writeY] = tile;
-                        tile.Y = writeY;
+                        if (grid[x, above] != null)
+                        {
+                            // Move tile down
+                            var tile = grid[x, above];
+                            grid[x, above] = null;
+                            grid[x, y] = tile;
+                            
+                            // Update tile position
+                            tile.Y = y;
+                            tile.transform.localPosition = new Vector3(
+                                tile.transform.localPosition.x,
+                                -y * gridLayout.cellSize.y,
+                                tile.transform.localPosition.z
+                            );
+                            break;
+                        }
                     }
-                    writeY++;
                 }
             }
-            // Fill new tiles
-            for (int y = writeY; y < height; y++)
+
+            // Fill empty spaces at the top with new tiles
+            for (int y = 0; y < height; y++)
             {
-                var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
-                tile.Init(x, y, GetRandomLetter(), TileType.Normal);
-                grid[x, y] = tile;
+                if (grid[x, y] == null)
+                {
+                    var newTile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
+                    newTile.Init(x, y, GetRandomLetter(), TileType.Normal);
+                    grid[x, y] = newTile;
+                    newTile.transform.localPosition = new Vector3(
+                        newTile.transform.localPosition.x,
+                        -y * gridLayout.cellSize.y,
+                        newTile.transform.localPosition.z
+                    );
+                }
             }
         }
     }
+
+    
 
     public void UnblockAdjacentsToPath(List<LetterTile> usedPath)
     {
