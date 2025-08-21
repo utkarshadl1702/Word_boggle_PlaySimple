@@ -29,6 +29,11 @@ public class GameManager : MonoBehaviour
     private LevelDataContainer levelDataContainer;
     private int currentLevelIndex = 0;
 
+
+    //For Levels
+    public int numberOfBugs = 0;
+    public int numberOfBlockedTiles = 0;
+
     private void Start()
     {
         cam = Camera.main;
@@ -38,7 +43,7 @@ public class GameManager : MonoBehaviour
         //     StartLevel(Random.Range(0, levelDataContainer.data.Count));
 
         // StartEndless();
-        
+
     }
 
     private void Awake()
@@ -83,9 +88,11 @@ public class GameManager : MonoBehaviour
 
         currentLevel = levelDataContainer.data[levelIndex];
         currentLevelIndex = levelIndex;
+        numberOfBugs = currentLevel.bugCount;
+        // numberOfBlockedTiles=currentLevel
 
         // Load the grid with level data
-        grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y);
+        grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y,numberOfBugs);
         
         // Set UI objective based on level type
         string objective = GetLevelObjective(currentLevel);

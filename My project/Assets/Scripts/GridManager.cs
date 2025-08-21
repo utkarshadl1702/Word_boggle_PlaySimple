@@ -55,7 +55,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public void LoadStaticGrid(List<LevelTile> data, int w, int h)
+    public void LoadStaticGrid(List<LevelTile> data, int w, int h,int numberOfBugs)
     {
         ClearGrid();
         width = w;
