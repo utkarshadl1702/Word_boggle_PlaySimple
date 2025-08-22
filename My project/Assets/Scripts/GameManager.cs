@@ -92,19 +92,21 @@ public class GameManager : MonoBehaviour
         // numberOfBlockedTiles=currentLevel
 
         // Load the grid with level data
-        grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y,numberOfBugs);
-        
+        grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y, numberOfBugs);
+
         // Set UI objective based on level type
         string objective = GetLevelObjective(currentLevel);
         ui.SetObjective(objective);
 
         levelTimer = currentLevel.timeSec > 0 ? currentLevel.timeSec : 0f;
         levelActive = true;
+
+        print(currentLevel.levelType);
     }
 
     private string GetLevelObjective(LevelData level)
     {
-        switch((LevelType)level.levelType)
+        switch ((LevelType)level.levelType)
         {
             case LevelType.MakeXWords:
                 return $"Make {level.wordCount} words";
@@ -148,21 +150,21 @@ public class GameManager : MonoBehaviour
         switch ((LevelType)currentLevel.levelType)
         {
             case LevelType.MakeXWords:
-                if (wordsCount >= currentLevel.wordCount) 
+                if (wordsCount >= currentLevel.wordCount)
                     LevelWin();
                 break;
 
             case LevelType.ReachScoreInTime:
-                if (totalScore >= currentLevel.totalScore) 
+                if (totalScore >= currentLevel.totalScore)
                     LevelWin();
-                else if (timeUp) 
+                else if (timeUp)
                     LevelFail();
                 break;
 
             case LevelType.MakeXWordsInTime:
-                if (wordsCount >= currentLevel.wordCount) 
+                if (wordsCount >= currentLevel.wordCount)
                     LevelWin();
-                else if (timeUp) 
+                else if (timeUp)
                     LevelFail();
                 break;
 
@@ -202,6 +204,7 @@ public class GameManager : MonoBehaviour
     {
         levelActive = false;
         ui.SetObjective("Level Complete!");
+        NextLevel();
     }
 
     private void LevelFail()
@@ -210,11 +213,11 @@ public class GameManager : MonoBehaviour
         ui.SetObjective("Time Up!");
     }
 
-    public void ProcessWord(string word)
+    public void ProcessWord(string word, List<LetterTile> selectedTiles)
     {
         if (wordManager.IsValid(word))
         {
-            bool usedBonus = false; // Implement bonus detection if needed
+            bool usedBonus = false;
             int score = wordManager.ScoreWord(word, usedBonus);
             ui.AddWordScore(score);
 
@@ -223,12 +226,44 @@ public class GameManager : MonoBehaviour
             {
                 CheckLevelEnd();
             }
+
+            // Handle tile removal and refilling
+            if (mode == GameMode.Endless)
+            {
+                grid.RemoveAndRefill(selectedTiles);
+            }
+
+            foreach (var tile in selectedTiles)
+            {
+                StartCoroutine(tile.GetComponent<GridCell>().GlowCoroutine(Color.green));
+            }
+
+
+
             print($"Word '{word}' scored {score} points.");
         }
+        else
+        {
+            foreach (var tile in selectedTiles)
+            {
+                StartCoroutine(tile.GetComponent<GridCell>().GlowCoroutine(Color.red));
+            }
 
+        }
         // Update UI with current word
         ui.SetCurrentWord(word);
     }
+
+
+
+
+
+    void FillUpValidWordGap(List<LetterTile> tilesToFill)
+    {
+
+    }
+
+
 
     // Menu hooks
     public void OnClick_Endless() => StartEndless();

@@ -8,6 +8,7 @@ public class WordDragManager : MonoBehaviour
     private List<GridCell> selectedCells = new List<GridCell>();
     public String wordFormed = "";
     private GameManager gameManager;
+    public List<LetterTile> selectedTiles;
 
     private void Start()
     {
@@ -43,14 +44,16 @@ public class WordDragManager : MonoBehaviour
             {
                 finalWord += cell.letter;
                 cell.ResetCell(); // reset visuals
+                selectedTiles.Add(cell.GetComponent<LetterTile>());
             }
 
             if (finalWord.Length > 0)
             {
-                gameManager.ProcessWord(finalWord);
+                gameManager.ProcessWord(finalWord, selectedTiles);
             }
-            
+
             selectedCells.Clear();
+            selectedTiles.Clear();
         }
     }
 }

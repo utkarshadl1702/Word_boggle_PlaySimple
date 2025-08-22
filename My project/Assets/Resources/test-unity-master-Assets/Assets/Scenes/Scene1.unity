@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 726853724}
   - component: {fileID: 726853725}
   m_Layer: 5
-  m_Name: Text (TMP) (3)
+  m_Name: Words Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -737,7 +737,7 @@ GameObject:
   - component: {fileID: 795790811}
   - component: {fileID: 795790812}
   m_Layer: 5
-  m_Name: Text (TMP) (5)
+  m_Name: Timer Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1016,7 +1016,7 @@ GameObject:
   - component: {fileID: 898550154}
   - component: {fileID: 898550155}
   m_Layer: 5
-  m_Name: Text (TMP) (4)
+  m_Name: ObjectiveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1249,7 +1249,7 @@ GameObject:
   - component: {fileID: 982218870}
   - component: {fileID: 982218871}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: Average Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1744,7 +1744,7 @@ GameObject:
   - component: {fileID: 1900604227}
   - component: {fileID: 1900604228}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Current Word
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1878,7 +1878,7 @@ GameObject:
   - component: {fileID: 1945955352}
   - component: {fileID: 1945955353}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: Total Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2066,7 +2066,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d2c78f9ecaa481ba48d9b2e28ecd3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelJson: {fileID: 4900000, guid: 0f13684315f9b4232a2431953630169a, type: 3}
 --- !u!114 &1955729348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2086,6 +2085,8 @@ MonoBehaviour:
   mode: 0
   endlessWidth: 4
   endlessHeight: 4
+  numberOfBugs: 2
+  numberOfBlockedTiles: 0
 --- !u!4 &1955729349
 Transform:
   m_ObjectHideFlags: 0
@@ -2114,6 +2115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wordFormed: 
+  selectedTiles: []
 --- !u!1 &2016262329
 GameObject:
   m_ObjectHideFlags: 0

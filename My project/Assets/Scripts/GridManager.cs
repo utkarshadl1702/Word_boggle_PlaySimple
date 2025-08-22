@@ -2,19 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+
 
 public class GridManager : MonoBehaviour
 {
     [Header("Grid")]
     public int width = 4;
     public int height = 4;
-    
+
     [Header("Prefabs")]
     public GameObject cellPrefab;
 
     [Header("Letter Generation")]
     [Tooltip("If empty, random A–Z. Optionally use frequency-biased letters.")]
-    public string allowedLetters = "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ"; 
+    public string allowedLetters = "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ";
     public bool useFrequencyBag = true;
 
     private LetterTile[,] grid;
@@ -29,7 +31,7 @@ public class GridManager : MonoBehaviour
         GetRandomLetter ??= DefaultRandomLetter;
         gridLayout = GetComponent<GridLayoutGroup>();
         rectTransform = GetComponent<RectTransform>();
-        
+
         // Set up grid layout properties
         float panelWidth = rectTransform.rect.width;
         float panelHeight = rectTransform.rect.height;
@@ -38,48 +40,52 @@ public class GridManager : MonoBehaviour
         gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
     }
 
-    public void BuildEmptyGrid(int w, int h)
-    {
-        ClearGrid();
-        width = w; 
-        height = h;
-        grid = new LetterTile[width, height];
-
-        for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
-        {
-            var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
-            char c = GetRandomLetter();
-            tile.Init(x, y, c, TileType.Normal);
-            grid[x, y] = tile;
-        }
-    }
-
-    public void LoadStaticGrid(List<LevelTile> data, int w, int h,int numberOfBugs)
+    public void BuildEmptyGrid(int w, int h)//For Endless Mode
     {
         ClearGrid();
         width = w;
         height = h;
         grid = new LetterTile[width, height];
 
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+            {
+                var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
+                char c = GetRandomLetter();
+                tile.Init(x, y, c, TileType.Normal);
+                grid[x, y] = tile;
+            }
+    }
+
+    public void LoadStaticGrid(List<LevelTile> data, int w, int h, int numberOfBugs)//For Levels Mode
+    {
+        ClearGrid();
+        width = w;
+        height = h;
+        grid = new LetterTile[width, height];
+
+
         // Update grid layout properties
         float panelWidth = rectTransform.rect.width;
         float panelHeight = rectTransform.rect.height;
         float cellWidth = panelWidth / width;
         float cellHeight = panelHeight / height;
+        var bugPositions = GetRandomNumbers(width * height, numberOfBugs);
         gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
 
         int i = 0;
         for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
-        {
-            if (i >= data.Count) break;
-            
-            var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
-            var d = data[i++];
-            tile.Init(x, y, d.letter[0], (TileType)d.tileType);
-            grid[x, y] = tile;
-        }
+            for (int x = 0; x < width; x++)
+            {
+                if (i >= data.Count) break;
+
+                var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
+                var d = data[i++];
+                if (bugPositions.Contains(i - 1) && d.tileType == 0)
+                    d.tileType = 2; // Make it a bug tile if it's not blocked or bonus already
+                tile.Init(x, y, d.letter[0], (TileType)d.tileType);
+                grid[x, y] = tile;
+            }
     }
 
     public bool AreAdjacent(LetterTile a, LetterTile b)
@@ -119,7 +125,7 @@ public class GridManager : MonoBehaviour
                             var tile = grid[x, above];
                             grid[x, above] = null;
                             grid[x, y] = tile;
-                            
+
                             // Update tile position
                             tile.Y = y;
                             tile.transform.localPosition = new Vector3(
@@ -151,20 +157,20 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    
+
 
     public void UnblockAdjacentsToPath(List<LetterTile> usedPath)
     {
-        HashSet<(int,int)> adj = new();
+        HashSet<(int, int)> adj = new();
         foreach (var t in usedPath)
         {
             for (int dx = -1; dx <= 1; dx++)
-            for (int dy = -1; dy <= 1; dy++)
-            {
-                if (dx == 0 && dy == 0) continue;
-                int nx = t.X + dx, ny = t.Y + dy;
-                if (InBounds(nx, ny)) adj.Add((nx, ny));
-            }
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx == 0 && dy == 0) continue;
+                    int nx = t.X + dx, ny = t.Y + dy;
+                    if (InBounds(nx, ny)) adj.Add((nx, ny));
+                }
         }
 
         foreach (var (x, y) in adj)
@@ -193,5 +199,20 @@ public class GridManager : MonoBehaviour
             return (char)('A' + Random.Range(0, 26));
         int i = Random.Range(0, allowedLetters.Length);
         return char.ToUpper(allowedLetters[i]);
+    }
+
+    public List<int> GetRandomNumbers(int n, int x)
+    {
+
+        //HashSet to make keep numbers unique
+        var result = new HashSet<int>();
+        var random = new System.Random();
+
+        while (result.Count < x)
+        {
+            result.Add(random.Next(n));
+        }
+
+        return result.ToList();
     }
 }

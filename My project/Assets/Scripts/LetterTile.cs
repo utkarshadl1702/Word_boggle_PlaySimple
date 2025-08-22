@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -54,6 +55,9 @@ public class LetterTile : MonoBehaviour
         // Optional: show letter via TextMeshPro child if your prefab has it.
     }
 
+    //glow them green for 1.5 sec and then turn them white again
+   
+
     public void ResetCell()
     {
         // Reset visual elements
@@ -66,14 +70,5 @@ public class LetterTile : MonoBehaviour
         // Reset letter text
         if (LetterText) LetterText.text = "";
 
-        // Reset grid position
-        X = 0;
-        Y = 0;
-
-        // Reset letter
-        letter = 'A';
-
-        // Reset name
-        name = "Tile_Reset";
     }
 }

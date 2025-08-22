@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,14 @@ public class GridCell : MonoBehaviour
             // Optional: change color for feedback
             targetSprite.color = Color.yellow;
         }
+    }
+
+    public IEnumerator GlowCoroutine(Color glowColor)
+    {
+        targetSprite.color = glowColor;
+        yield return new WaitForSeconds(0.5f);
+        targetSprite.color = Color.white;
+       
     }
 
     public void ResetCell()
