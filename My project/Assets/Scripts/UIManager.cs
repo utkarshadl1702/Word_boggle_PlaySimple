@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
 
     public void SetObjective(string s) { if (objectiveText) objectiveText.text = s; }
     public void SetTimer(float sec) { if (timerText) timerText.text = $"{Mathf.CeilToInt(sec)}s"; }
-
+   
     public int GetTotalScore() => totalScore;
     public int GetWordsCount() => wordsFormed;
 }

@@ -72,6 +72,7 @@ public class GridManager : MonoBehaviour
         float cellWidth = panelWidth / width;
         float cellHeight = panelHeight / height;
         var bugPositions = GetRandomPositionForSpecialTile(width * height, numberOfBugs);
+        var blockPositions = GetRandomPositionForSpecialTile(width * height, 0);
         specialTiles = bugPositions;
 
         gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
@@ -99,67 +100,65 @@ public class GridManager : MonoBehaviour
         return (dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0));
     }
 
-    public void RemoveAndRefill(List<LetterTile> tilesToRemove)
+  public IEnumerator RemoveAndRefill(List<LetterTile> tilesToRemove)
+{
+    print("Removing and refilling tiles (fall-down, no instantiate)...");
+
+    bool[,] empty = new bool[width, height];
+
+    // Step 1: mark empties
+    foreach (var tile in tilesToRemove)
     {
-        print("Removing and refilling tiles...");
-        // Step 1: Mark tiles for removal
-        foreach (var tile in tilesToRemove)
+        if (grid[tile.X, tile.Y] == tile)
         {
-            if (grid[tile.X, tile.Y] == tile)
-            {
-                Destroy(tile.gameObject);
-                grid[tile.X, tile.Y] = null;
-            }
-        }
-
-        // Step 2: Process each column independently
-        for (int x = 0; x < width; x++)
-        {
-            // Find empty spaces and shift tiles down
-            for (int y = 0; y < height; y++)
-            {
-                if (grid[x, y] == null)
-                {
-                    // Find the next non-null tile above
-                    for (int above = y + 1; above < height; above++)
-                    {
-                        if (grid[x, above] != null)
-                        {
-                            // Move tile down
-                            var tile = grid[x, above];
-                            grid[x, above] = null;
-                            grid[x, y] = tile;
-
-                            // Update tile position
-                            tile.Y = y;
-                            tile.transform.localPosition = new Vector3(
-                                tile.transform.localPosition.x,
-                                -y * gridLayout.cellSize.y,
-                                tile.transform.localPosition.z
-                            );
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Fill empty spaces at the top with new tiles
-            for (int y = 0; y < height; y++)
-            {
-                if (grid[x, y] == null)
-                {
-                    var newTile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
-                    newTile.Init(x, y, GetRandomLetter(), TileType.Normal);
-                    grid[x, y] = newTile;
-                    newTile.transform.localPosition = new Vector3(
-                        newTile.transform.localPosition.x,
-                        -y * gridLayout.cellSize.y,
-                        newTile.transform.localPosition.z
-                    );
-                }
-            }
+            tile.ResetCell();
+            empty[tile.X, tile.Y] = true;
         }
     }
+
+    yield return new WaitForSeconds(1f);
+
+    // Step 2: process each column
+    for (int x = 0; x < width; x++)
+    {
+        // Start from bottom going upward
+        for (int y = 0; y < height; y++)
+        {
+            if (!empty[x, y]) continue;
+
+            // Find next non-empty ABOVE
+            int above = y + 1;
+            while (above < height && empty[x, above]) above++;
+
+            if (above < height)
+            {
+                var src = grid[x, above];
+                var dst = grid[x, y];
+
+                if (src.Type == TileType.Normal) dst.tileScore = 1;
+
+                // Copy the above tile into this one
+                dst.Init(dst.X, dst.Y, src.Letter, src.Type);
+
+                // Reset the above (now becomes empty)
+                src.ResetCell();
+                empty[x, above] = true;
+                empty[x, y] = false;
+            }
+            else
+            {
+                // Nothing above → assign fresh letter
+                var dst = grid[x, y];
+                dst.tileScore = 1;
+                dst.Init(dst.X, dst.Y, GetRandomLetter(), TileType.Normal);
+                empty[x, y] = false;
+            }
+
+            yield return new WaitForSeconds(0.2f); // smoother animation
+        }
+    }
+}
+
 
 
 

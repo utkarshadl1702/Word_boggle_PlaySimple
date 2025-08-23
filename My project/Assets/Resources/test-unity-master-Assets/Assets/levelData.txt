@@ -9,6 +9,7 @@
         "x": 3,
         "y": 3
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -57,6 +58,7 @@
         "x": 3,
         "y": 3
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -105,6 +107,7 @@
         "x": 4,
         "y": 4
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -181,6 +184,7 @@
         "x": 4,
         "y": 4
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -257,6 +261,7 @@
         "x": 3,
         "y": 4
       },
+      "levelType": 2,
       "gridData": [
         {
           "tileType": 0,
@@ -317,6 +322,7 @@
         "x": 5,
         "y": 5
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -429,6 +435,7 @@
         "x": 4,
         "y": 4
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -505,6 +512,7 @@
         "x": 4,
         "y": 4
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -581,6 +589,7 @@
         "x": 6,
         "y": 6
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -737,6 +746,7 @@
         "x": 6,
         "y": 7
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -917,6 +927,7 @@
         "x": 6,
         "y": 6
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 2,
@@ -1073,6 +1084,7 @@
         "x": 6,
         "y": 6
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 2,
@@ -1229,6 +1241,7 @@
         "x": 7,
         "y": 7
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 3,
@@ -1437,6 +1450,7 @@
         "x": 6,
         "y": 6
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 3,
@@ -2229,6 +2243,7 @@
         "x": 6,
         "y": 7
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 2,
@@ -2409,6 +2424,7 @@
         "x": 7,
         "y": 8
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,
@@ -2645,6 +2661,7 @@
         "x": 7,
         "y": 7
       },
+      "levelType": 4,
       "gridData": [
         {
           "tileType": 0,

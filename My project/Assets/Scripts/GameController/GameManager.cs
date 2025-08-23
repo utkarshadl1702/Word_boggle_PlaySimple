@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Mode")]
     public GameMode mode = GameMode.Endless;
+    private bool isLevelStarted = false;
 
     [Header("Endless Settings")]
     public int endlessWidth = 4;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     private float levelTimer;
     private bool levelActive;
     private int bugsCollected = 0;
+    private int randomLevel = -1;
 
     private Camera cam;
     private LevelDataContainer levelDataContainer;
@@ -49,6 +51,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         LoadLevelData();
+        randomLevel = Random.Range(0, levelDataContainer.data.Count);
     }
 
     private void LoadLevelData()
@@ -72,9 +75,10 @@ public class GameManager : MonoBehaviour
         ui.ResetStats();
         grid.BuildEmptyGrid(endlessWidth, endlessHeight);
         levelActive = false;
+        isLevelStarted = true;
     }
 
-    public void StartLevel(int levelIndex = 0)
+    public void StartLevel(int levelIndex)
     {
         if (levelDataContainer == null || levelIndex >= levelDataContainer.data.Count)
         {
@@ -102,6 +106,7 @@ public class GameManager : MonoBehaviour
         levelActive = true;
 
         print(currentLevel.levelType);
+        isLevelStarted = true;
     }
 
     private string GetLevelObjective(LevelData level)
@@ -121,6 +126,7 @@ public class GameManager : MonoBehaviour
                 return "Complete the level";
         }
     }
+    private float t = 0;
 
     private void Update()
     {
@@ -131,6 +137,11 @@ public class GameManager : MonoBehaviour
             if (levelTimer < 0) levelTimer = 0;
             ui.SetTimer(levelTimer);
             if (levelTimer <= 0) CheckLevelEnd();
+        }
+        if (mode == GameMode.Endless)
+        {
+            ui.SetTimer(t);
+            t += Time.deltaTime;
         }
     }
 
@@ -232,7 +243,7 @@ public class GameManager : MonoBehaviour
             // Handle tile removal and refilling
             if (mode == GameMode.Endless)
             {
-                grid.RemoveAndRefill(selectedTiles);
+                StartCoroutine(grid.RemoveAndRefill(selectedTiles));
             }
 
 
@@ -262,11 +273,13 @@ public class GameManager : MonoBehaviour
 
     // Menu hooks
     public void OnClick_Endless() => StartEndless();
-    public void OnClick_Levels() => StartLevel();
+    public void OnClick_Levels() => StartLevel(Random.Range(0, levelDataContainer.data.Count));
 
     // Add method to go to next level
     public void NextLevel()
     {
-        StartLevel(14);
+        //random number between 0-49
+        int nextLevelIndex = Random.Range(0, levelDataContainer.data.Count);
+        StartLevel(nextLevelIndex);
     }
 }
