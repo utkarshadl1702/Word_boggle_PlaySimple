@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "bugCount": 0,
+      "bugCount": 1,
       "wordCount": 2,
       "timeSec": 0,
       "totalScore": 0,

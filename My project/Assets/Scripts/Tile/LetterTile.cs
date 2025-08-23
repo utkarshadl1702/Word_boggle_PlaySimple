@@ -15,6 +15,7 @@ public class LetterTile : MonoBehaviour
     [SerializeField] private TileType tileType = TileType.Normal;
     [SerializeField] private TMP_Text LetterText;
     [SerializeField] private ScoreIndicator scoreDots;
+    public bool isBugTile = false;
     public int tileScore = 1;
 
 
@@ -43,23 +44,22 @@ public class LetterTile : MonoBehaviour
         X = x; Y = y; Letter = c; Type = type; LetterText.text = Letter.ToString();
         GetComponent<GridCell>().letter = Letter.ToString();
         UpdateVisual();
+        
+        scoreDots.IndicateScoreDots(tileScore);
     }
 
     public void UpdateVisual()
     {
 
-        // You can swap sprite via your provided prefab states (normal/blocked/bonus)
-        // Here we just tint for clarity in a quick prototype:
         switch (tileType)
         {
             case TileType.Normal: break;
             case TileType.Blocked: blockedSprite.SetActive(true); break;
-            case TileType.Bonus: tileScore = 2; bugSprite.SetActive(true); break;
+            case TileType.Bonus: tileScore = 2; isBugTile = true; bugSprite.SetActive(true); break;
         }
-        // Optional: show letter via TextMeshPro child if your prefab has it.
+       
     }
 
-    //glow them green for 1.5 sec and then turn them white again
 
 
     public void ResetCell()

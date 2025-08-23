@@ -23,6 +23,7 @@ public class GridManager : MonoBehaviour
     public LetterTile[,] Grid => grid;
     private GridLayoutGroup gridLayout;
     private RectTransform rectTransform;
+    private List<int> specialTiles = new List<int>();
 
     public System.Func<char> GetRandomLetter;
 
@@ -70,7 +71,9 @@ public class GridManager : MonoBehaviour
         float panelHeight = rectTransform.rect.height;
         float cellWidth = panelWidth / width;
         float cellHeight = panelHeight / height;
-        var bugPositions = GetRandomNumbers(width * height, numberOfBugs);
+        var bugPositions = GetRandomPositionForSpecialTile(width * height, numberOfBugs);
+        specialTiles = bugPositions;
+
         gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
 
         int i = 0;
@@ -202,7 +205,7 @@ public class GridManager : MonoBehaviour
         return char.ToUpper(allowedLetters[i]);
     }
 
-    public List<int> GetRandomNumbers(int n, int x)
+    public List<int> GetRandomPositionForSpecialTile(int n, int x)
     {
 
         //HashSet to make keep numbers unique
@@ -211,7 +214,9 @@ public class GridManager : MonoBehaviour
 
         while (result.Count < x)
         {
-            result.Add(random.Next(n));
+            var num = random.Next(n);
+            if (specialTiles.Contains(num)) continue;
+            result.Add(num);
         }
 
         return result.ToList();

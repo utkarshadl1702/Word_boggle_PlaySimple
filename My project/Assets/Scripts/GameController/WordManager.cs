@@ -5,11 +5,14 @@ using System.IO;
 public class WordManager : MonoBehaviour
 {
     [Header("Dictionary")]
-    public TextAsset wordList; // put /Resources/wordList and assign in Inspector
+    public TextAsset wordList; // put /Resources/wordList 
     private string dictionaryPath;
+    public List<string> foundWords;
 
     [Header("Scoring")] 
     private Dictionary<char, int> letterScore;
+
+    
 
     private void Awake()
     {
@@ -30,6 +33,8 @@ public class WordManager : MonoBehaviour
     public bool IsValid(string word)
     {
         if (string.IsNullOrEmpty(word) || word.Length < 2) return false;
+        if (foundWords.Contains(word)) return false; // Already found
+        
         
             print($"Checking word '{word}' against dictionary at {dictionaryPath}");
         // Check word against dictionary file

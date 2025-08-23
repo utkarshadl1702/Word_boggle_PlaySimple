@@ -5,7 +5,7 @@ using System.Linq;
 public class ScoreIndicator : MonoBehaviour
 {
     // Start is called before the first frame update
-    List<ScoreDot> scoreDots = new List<ScoreDot>();
+    [SerializeField] private List<ScoreDot> scoreDots = new List<ScoreDot>();
 
     void Start()
     {
@@ -14,6 +14,11 @@ public class ScoreIndicator : MonoBehaviour
 
     public void IndicateScoreDots(int scoreInt)
     {
+        print("Score dots to indicate: " + scoreDots.Count);
+        for (int i = 0; i < scoreInt; i++)
+        {
+            scoreDots[i].TurnOnOffSprite(true);
+        }
 
     }
 

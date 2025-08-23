@@ -6,7 +6,7 @@ public class ScoreDot : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] private Image visSprite;
     private Color initialColor;
-    void Start()
+    void Awake()
     {
         visSprite = GetComponent<Image>();
         initialColor = visSprite.color;
@@ -17,7 +17,9 @@ public class ScoreDot : MonoBehaviour
     {
         if (shouldTurnOn)
         {
-            visSprite.color = new Color(visSprite.color.r, visSprite.color.g, visSprite.color.b, 1);
+            //increase alpha to 1
+            print(shouldTurnOn + "turn on sprite");
+            visSprite.color = new Color(visSprite.color.r, visSprite.color.g, visSprite.color.b, 1f);
         }
         else
         {

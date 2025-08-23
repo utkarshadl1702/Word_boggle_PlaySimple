@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a2fa749294a44a89f0672d9642046d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visSprite: {fileID: 0}
 --- !u!1 &990310521115680242
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a2fa749294a44a89f0672d9642046d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visSprite: {fileID: 0}
 --- !u!1 &1672099033825042238
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,6 +416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a2fa749294a44a89f0672d9642046d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visSprite: {fileID: 0}
 --- !u!1 &5637470563807786973
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +636,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7293174272821791593}
   - component: {fileID: 3466622928760145685}
+  - component: {fileID: 6334584786522362922}
   m_Layer: 5
   m_Name: ScoreIndicators
   m_TagString: Untagged
@@ -688,6 +692,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6334584786522362922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5984842581541187855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70d584af5bd67489cad87b39e536476a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreDots:
+  - {fileID: 8388915197536464149}
+  - {fileID: 834287080716917033}
+  - {fileID: 5863514225098739172}
 --- !u!1 &6849207466271886690
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,6 +778,7 @@ MonoBehaviour:
   letter: 65
   tileType: 0
   LetterText: {fileID: 3607313622835476064}
+  scoreDots: {fileID: 6334584786522362922}
   tileScore: 1
 --- !u!61 &4171344599276547677
 BoxCollider2D:

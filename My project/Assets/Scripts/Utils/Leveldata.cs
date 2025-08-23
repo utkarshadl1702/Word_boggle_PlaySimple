@@ -15,7 +15,7 @@ public class LevelData
     public int timeSec;
     public int totalScore;
     public GridSize gridSize;
-    public int levelType;
+    public int levelType = 1;
     public List<LevelTile> gridData;
 }
 
@@ -33,13 +33,11 @@ public class LevelTile
     public int tileType;
 }
 
-public enum LevelType 
-{ 
-    MakeXWords = 0, 
-    ReachScoreInTime = 1, 
+public enum LevelType
+{
+    MakeXWords = 4,
     MakeXWordsInTime = 2,
-    BugCatch = 3,
-    BlockedTiles = 4,
-    TimedScore = 5,
-    TimedWordsAndScore = 7
+    ReachScoreInTime = 7,
+    CompleteAllTheBugs = 3
+
 }

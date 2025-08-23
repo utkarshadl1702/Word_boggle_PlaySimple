@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public enum GameMode { Endless, Levels }
 
@@ -24,7 +23,7 @@ public class GameManager : MonoBehaviour
     private LevelData currentLevel;
     private float levelTimer;
     private bool levelActive;
-    private List<string> wordsFormed = new List<string>();
+    private int bugsCollected = 0;
 
     private Camera cam;
     private LevelDataContainer levelDataContainer;
@@ -115,14 +114,9 @@ public class GameManager : MonoBehaviour
                 return $"Score {level.totalScore} points in {level.timeSec}s";
             case LevelType.MakeXWordsInTime:
                 return $"Make {level.wordCount} words in {level.timeSec}s";
-            case LevelType.BugCatch:
-                return $"Catch {level.bugCount} bugs";
-            case LevelType.BlockedTiles:
-                return $"Clear {level.wordCount} words with blocked tiles";
-            case LevelType.TimedScore:
-                return $"Score as much as possible in {level.timeSec}s";
-            case LevelType.TimedWordsAndScore:
-                return $"Score {level.totalScore} in {level.timeSec}s";
+            case LevelType.CompleteAllTheBugs:
+                return $"Collect all {level.bugCount} bugs";
+           
             default:
                 return "Complete the level";
         }
@@ -168,36 +162,42 @@ public class GameManager : MonoBehaviour
                 else if (timeUp)
                     LevelFail();
                 break;
-
-            case LevelType.BlockedTiles:
-                if (wordsCount >= currentLevel.wordCount)
+            case LevelType.CompleteAllTheBugs:
+                if (bugsCollected >= currentLevel.bugCount)
                     LevelWin();
                 break;
 
-            case LevelType.TimedScore:
-                if (timeUp)
-                {
-                    // For timed score, any score is valid, just end the level
-                    LevelWin();
-                    ui.SetObjective($"Final Score: {totalScore}");
-                }
-                break;
+            // case LevelType.BlockedTiles:
+                //     if (wordsCount >= currentLevel.wordCount)
+                //         LevelWin();
+                //     break;
 
-            case LevelType.TimedWordsAndScore:
-                if (timeUp)
-                {
-                    if (totalScore >= currentLevel.totalScore)
-                        LevelWin();
-                    else
-                        LevelFail();
-                }
-                break;
+                // case LevelType.TimedScore:
+                //     if (timeUp)
+                //     {
+                //         // For timed score, any score is valid, just end the level
+                //         LevelWin();
+                //         ui.SetObjective($"Final Score: {totalScore}");
+                //     }
+                //     break;
+
+                // case LevelType.TimedWordsAndScore:
+                //     if (timeUp)
+                //     {
+                //         if (totalScore >= currentLevel.totalScore)
+                //             LevelWin();
+                //         else
+                //             LevelFail();
+                //     }
+                // break;
         }
     }
 
     private void LevelWin()
     {
         levelActive = false;
+        
+        wordManager.foundWords.Clear();
         ui.SetObjective("Level Complete!");
         NextLevel();
     }
@@ -219,8 +219,11 @@ public class GameManager : MonoBehaviour
             // Check level completion after each valid word
             if (mode == GameMode.Levels && levelActive)
             {
+                
+                wordManager.foundWords.Add(word);
                 foreach (var tile in selectedTiles)
                 {
+                    if(tile.isBugTile) bugsCollected++;
                     StartCoroutine(tile.GetComponent<GridCell>().GlowCoroutine(Color.green));
                 }
                 CheckLevelEnd();
@@ -264,6 +267,6 @@ public class GameManager : MonoBehaviour
     // Add method to go to next level
     public void NextLevel()
     {
-        StartLevel(currentLevelIndex + 1);
+        StartLevel(14);
     }
 }
