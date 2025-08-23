@@ -51,17 +51,14 @@ public class WordManager : MonoBehaviour
         letterScore[char.ToUpper(letter)] = score;
     }
 
-    public int ScoreWord(string word, bool usedBonus)
+    public int ScoreWord(List<LetterTile>selectedTiles, bool usedBonus)
     {
         int s = 0;
-        foreach (var c in word.ToUpper())
+        foreach (var c in selectedTiles)
         {
-            if (letterScore.TryGetValue(c, out int v)) 
-                s += v;
-            else 
-                s += 1; // Default score if letter score not set
+                s += c.tileScore;
         }
-        if (usedBonus) s += 5; // simple bonus
+        
         return s;
     }
 }

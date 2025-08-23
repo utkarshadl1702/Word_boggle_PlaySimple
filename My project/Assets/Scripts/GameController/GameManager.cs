@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private LevelData currentLevel;
     private float levelTimer;
     private bool levelActive;
+    private List<string> wordsFormed = new List<string>();
 
     private Camera cam;
     private LevelDataContainer levelDataContainer;
@@ -168,12 +169,6 @@ public class GameManager : MonoBehaviour
                     LevelFail();
                 break;
 
-            // case LevelType.BugCatch:
-            //     // Assuming you have a method to track caught bugs
-            //     if (ui.GetBugsCaught() >= currentLevel.bugCount)
-            //         LevelWin();
-            //     break;
-
             case LevelType.BlockedTiles:
                 if (wordsCount >= currentLevel.wordCount)
                     LevelWin();
@@ -218,12 +213,16 @@ public class GameManager : MonoBehaviour
         if (wordManager.IsValid(word))
         {
             bool usedBonus = false;
-            int score = wordManager.ScoreWord(word, usedBonus);
+            int score = wordManager.ScoreWord(selectedTiles, usedBonus);
             ui.AddWordScore(score);
 
             // Check level completion after each valid word
             if (mode == GameMode.Levels && levelActive)
             {
+                foreach (var tile in selectedTiles)
+                {
+                    StartCoroutine(tile.GetComponent<GridCell>().GlowCoroutine(Color.green));
+                }
                 CheckLevelEnd();
             }
 
@@ -233,10 +232,6 @@ public class GameManager : MonoBehaviour
                 grid.RemoveAndRefill(selectedTiles);
             }
 
-            foreach (var tile in selectedTiles)
-            {
-                StartCoroutine(tile.GetComponent<GridCell>().GlowCoroutine(Color.green));
-            }
 
 
 
@@ -258,10 +253,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    void FillUpValidWordGap(List<LetterTile> tilesToFill)
-    {
 
-    }
 
 
 

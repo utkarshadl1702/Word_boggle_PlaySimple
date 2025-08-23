@@ -16,7 +16,7 @@ public class GridManager : MonoBehaviour
 
     [Header("Letter Generation")]
     [Tooltip("If empty, random A–Z. Optionally use frequency-biased letters.")]
-    public string allowedLetters = "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ";
+    public string allowedLetters = "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ";// For endless
     public bool useFrequencyBag = true;
 
     private LetterTile[,] grid;
@@ -84,6 +84,7 @@ public class GridManager : MonoBehaviour
                 if (bugPositions.Contains(i - 1) && d.tileType == 0)
                     d.tileType = 2; // Make it a bug tile if it's not blocked or bonus already
                 tile.Init(x, y, d.letter[0], (TileType)d.tileType);
+                
                 grid[x, y] = tile;
             }
     }

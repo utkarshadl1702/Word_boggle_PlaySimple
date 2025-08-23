@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ public class LetterTile : MonoBehaviour
     [SerializeField] private char letter = 'A';
     [SerializeField] private TileType tileType = TileType.Normal;
     [SerializeField] private TMP_Text LetterText;
+    [SerializeField] private ScoreIndicator scoreDots;
+    public int tileScore = 1;
+
 
 
 
@@ -50,13 +54,13 @@ public class LetterTile : MonoBehaviour
         {
             case TileType.Normal: break;
             case TileType.Blocked: blockedSprite.SetActive(true); break;
-            case TileType.Bonus: bugSprite.SetActive(true); break;
+            case TileType.Bonus: tileScore = 2; bugSprite.SetActive(true); break;
         }
         // Optional: show letter via TextMeshPro child if your prefab has it.
     }
 
     //glow them green for 1.5 sec and then turn them white again
-   
+
 
     public void ResetCell()
     {
