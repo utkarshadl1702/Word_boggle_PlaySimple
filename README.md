@@ -1,6 +1,7 @@
 # Word Boggle PlaySimple
 
 A Unity-based word puzzle game inspired by Boggle. Players form words by selecting adjacent letter tiles on a grid. The game supports both endless and level-based modes, with scoring, objectives, and special tiles.
+Unity Version:- 2022.3.62f1
 
 ## Features
 
