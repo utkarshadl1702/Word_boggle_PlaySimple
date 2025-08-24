@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     {
         cam = Camera.main;
         // StartEndless(); // default
-        //random number from 0-maxlevels
+        
         // if (levelDataContainer != null && levelDataContainer.data.Count > 0)
         //     StartLevel(Random.Range(0, levelDataContainer.data.Count));
 
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
         currentLevel = levelDataContainer.data[levelIndex];
         currentLevelIndex = levelIndex;
         numberOfBugs = currentLevel.bugCount;
-        // numberOfBlockedTiles=currentLevel
+       
 
         // Load the grid with level data
         grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y, numberOfBugs);
@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
                 return $"Make {level.wordCount} words in {level.timeSec}s";
             case LevelType.CompleteAllTheBugs:
                 return $"Collect all {level.bugCount} bugs";
-           
+
             default:
                 return "Complete the level";
         }
@@ -177,37 +177,18 @@ public class GameManager : MonoBehaviour
                 if (bugsCollected >= currentLevel.bugCount)
                     LevelWin();
                 break;
+            default:
+                    if (timeUp)
+                        LevelWin();
+                break;
 
-            // case LevelType.BlockedTiles:
-                //     if (wordsCount >= currentLevel.wordCount)
-                //         LevelWin();
-                //     break;
-
-                // case LevelType.TimedScore:
-                //     if (timeUp)
-                //     {
-                //         // For timed score, any score is valid, just end the level
-                //         LevelWin();
-                //         ui.SetObjective($"Final Score: {totalScore}");
-                //     }
-                //     break;
-
-                // case LevelType.TimedWordsAndScore:
-                //     if (timeUp)
-                //     {
-                //         if (totalScore >= currentLevel.totalScore)
-                //             LevelWin();
-                //         else
-                //             LevelFail();
-                //     }
-                // break;
         }
     }
 
     private void LevelWin()
     {
         levelActive = false;
-        
+
         wordManager.foundWords.Clear();
         ui.SetObjective("Level Complete!");
         NextLevel();
@@ -230,13 +211,15 @@ public class GameManager : MonoBehaviour
             // Check level completion after each valid word
             if (mode == GameMode.Levels && levelActive)
             {
-                
+                // grid.UnblockAdjacentsToPath(selectedTiles);
+
                 wordManager.foundWords.Add(word);
                 foreach (var tile in selectedTiles)
                 {
-                    if(tile.isBugTile) bugsCollected++;
+                    if (tile.isBugTile) bugsCollected++;
                     StartCoroutine(tile.GetComponent<GridCell>().GlowCoroutine(Color.green));
                 }
+                grid.UnblockAdjacentsToPath(selectedTiles);
                 CheckLevelEnd();
             }
 

@@ -175,6 +175,7 @@ GameObject:
   - component: {fileID: 604712726407598384}
   - component: {fileID: 3404191505484060475}
   - component: {fileID: 9075165230399496046}
+  - component: {fileID: 9218415566663665395}
   m_Layer: 5
   m_Name: Block
   m_TagString: Untagged
@@ -239,6 +240,27 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!95 &9218415566663665395
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990310521115680242}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7554515a8ea3b4f7aac4f56c42cbac25, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1227062394812861922
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,7 +801,10 @@ MonoBehaviour:
   tileType: 0
   LetterText: {fileID: 3607313622835476064}
   scoreDots: {fileID: 6334584786522362922}
+  gridCell: {fileID: 0}
+  isBugTile: 0
   tileScore: 1
+  isBlocked: 0
 --- !u!61 &4171344599276547677
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -840,6 +865,7 @@ MonoBehaviour:
   letter: 
   isSelected: 0
   targetSprite: {fileID: 8534418721661827965}
+  isBlocked: 0
 --- !u!114 &1759401012819767886
 MonoBehaviour:
   m_ObjectHideFlags: 0

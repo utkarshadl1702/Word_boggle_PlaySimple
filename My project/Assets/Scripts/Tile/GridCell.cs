@@ -7,6 +7,7 @@ public class GridCell : MonoBehaviour
     public string letter;   // The text/letter this cell holds
     [HideInInspector] public bool isSelected = false;
     public Image targetSprite;
+    public bool isBlocked = false;
 
     public void SelectCell()
     {

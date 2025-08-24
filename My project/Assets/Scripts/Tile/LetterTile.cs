@@ -15,8 +15,10 @@ public class LetterTile : MonoBehaviour
     [SerializeField] private TileType tileType = TileType.Normal;
     [SerializeField] private TMP_Text LetterText;
     [SerializeField] private ScoreIndicator scoreDots;
+    [SerializeField] private GridCell gridCell;
     public bool isBugTile = false;
     public int tileScore = 1;
+    public bool isBlocked = false;
 
 
 
@@ -29,6 +31,7 @@ public class LetterTile : MonoBehaviour
     {
         get => letter;
         set { letter = char.ToUpper(value); name = $"Tile_{letter}_{X}_{Y}"; }
+
     }
 
     public TileType Type
@@ -54,10 +57,17 @@ public class LetterTile : MonoBehaviour
         switch (tileType)
         {
             case TileType.Normal: break;
-            case TileType.Blocked: blockedSprite.SetActive(true); break;
+            case TileType.Blocked: blockedSprite.SetActive(true); isBlocked = true; tileScore = 3; break;
             case TileType.Bonus: tileScore = 2; isBugTile = true; bugSprite.SetActive(true); break;
+            default:
+                isBlocked = false; break;
         }
        
+    }
+
+    public void UnBlockTile()
+    {
+        blockedSprite.SetActive(false);
     }
 
 

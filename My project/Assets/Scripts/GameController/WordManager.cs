@@ -34,13 +34,10 @@ public class WordManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(word) || word.Length < 2) return false;
         if (foundWords.Contains(word)) return false; // Already found
-        
-        
-            print($"Checking word '{word}' against dictionary at {dictionaryPath}");
+      
         // Check word against dictionary file
         if (File.Exists(dictionaryPath))
         {
-            print($"Checking word '{word}' against dictionary at {dictionaryPath}");
             string upperWord = word.ToUpper();
             foreach (string line in File.ReadLines(dictionaryPath))
             {

@@ -28,7 +28,19 @@ public class WordDragManager : MonoBehaviour
             foreach (RaycastResult result in results)
             {
                 GridCell cell = result.gameObject.GetComponent<GridCell>();
-                if (cell != null && !cell.isSelected)
+                if (cell != null && cell.GetComponent<LetterTile>().isBlocked)
+                {
+                    string finalWord = "";
+                    foreach (GridCell cell1 in selectedCells)
+                    {
+                        finalWord += cell1.letter;
+                        cell1.ResetCell(); // reset visuals
+                        selectedTiles.Add(cell1.GetComponent<LetterTile>());
+                    }
+                    selectedCells.Clear();
+                    selectedTiles.Clear();
+                }
+                else if (cell != null && !cell.isSelected)
                 {
                     cell.SelectCell();
                     selectedCells.Add(cell);
@@ -39,21 +51,29 @@ public class WordDragManager : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0)) // release finger/mouse
         {
-            string finalWord = "";
-            foreach (GridCell cell in selectedCells)
-            {
-                finalWord += cell.letter;
-                cell.ResetCell(); // reset visuals
-                selectedTiles.Add(cell.GetComponent<LetterTile>());
-            }
-
-            if (finalWord.Length > 0)
-            {
-                gameManager.ProcessWord(finalWord, selectedTiles);
-            }
-
-            selectedCells.Clear();
-            selectedTiles.Clear();
+            HandlePointUp();
         }
     }
+
+    void HandlePointUp()
+    {
+        string finalWord = "";
+        foreach (GridCell cell in selectedCells)
+        {
+            finalWord += cell.letter;
+            cell.ResetCell(); // reset visuals
+            selectedTiles.Add(cell.GetComponent<LetterTile>());
+        }
+
+        if (finalWord.Length > 0)
+        {
+            gameManager.ProcessWord(finalWord, selectedTiles);
+        }
+
+        selectedCells.Clear();
+        selectedTiles.Clear();
+
+    }
 }
+
+

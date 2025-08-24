@@ -15,7 +15,6 @@ public class GridManager : MonoBehaviour
     public GameObject cellPrefab;
 
     [Header("Letter Generation")]
-    [Tooltip("If empty, random A–Z. Optionally use frequency-biased letters.")]
     public string allowedLetters = "EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ";// For endless
     public bool useFrequencyBag = true;
 
@@ -26,6 +25,7 @@ public class GridManager : MonoBehaviour
     private List<int> specialTiles = new List<int>();
 
     public System.Func<char> GetRandomLetter;
+
 
     private void Awake()
     {
@@ -72,7 +72,7 @@ public class GridManager : MonoBehaviour
         float cellWidth = panelWidth / width;
         float cellHeight = panelHeight / height;
         var bugPositions = GetRandomPositionForSpecialTile(width * height, numberOfBugs);
-        var blockPositions = GetRandomPositionForSpecialTile(width * height, 0);
+        var blockPositions = GetRandomPositionForSpecialTile(width * height, 2);
         specialTiles = bugPositions;
 
         gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
@@ -87,8 +87,12 @@ public class GridManager : MonoBehaviour
                 var d = data[i++];
                 if (bugPositions.Contains(i - 1) && d.tileType == 0)
                     d.tileType = 2; // Make it a bug tile if it's not blocked or bonus already
-                tile.Init(x, y, d.letter[0], (TileType)d.tileType);
-                
+
+                if (blockPositions.Contains(i - 1) && d.tileType == 0)
+                    d.tileType = 1;
+
+                tile.Init(x, y, GetRandomLetter(), (TileType)d.tileType);
+
                 grid[x, y] = tile;
             }
     }
@@ -100,89 +104,100 @@ public class GridManager : MonoBehaviour
         return (dx <= 1 && dy <= 1 && !(dx == 0 && dy == 0));
     }
 
-  public IEnumerator RemoveAndRefill(List<LetterTile> tilesToRemove)
-{
-    print("Removing and refilling tiles (fall-down, no instantiate)...");
-
-    bool[,] empty = new bool[width, height];
-
-    // Step 1: mark empties
-    foreach (var tile in tilesToRemove)
+    public IEnumerator RemoveAndRefill(List<LetterTile> tilesToRemove)
     {
-        if (grid[tile.X, tile.Y] == tile)
+        print("Removing and refilling tiles (fall-down from bottom)...");
+
+        bool[,] empty = new bool[width, height];
+
+        // Step 1: mark empties
+        foreach (var tile in tilesToRemove)
         {
-            tile.ResetCell();
-            empty[tile.X, tile.Y] = true;
+            if (grid[tile.X, tile.Y] == tile)
+            {
+                tile.ResetCell();
+                empty[tile.X, tile.Y] = true;
+            }
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // Step 2: process each column
+        for (int x = 0; x < width; x++)
+        {
+            // Start from top going downward
+            for (int y = height - 1; y >= 0; y--)
+            {
+                if (!empty[x, y]) continue;
+
+                // Find next non-empty BELOW
+                int below = y - 1;
+                while (below >= 0 && empty[x, below]) below--;
+
+                if (below >= 0)
+                {
+                    var src = grid[x, below];
+                    var dst = grid[x, y];
+
+                    if (src.Type == TileType.Normal) dst.tileScore = Random.Range(1,4);
+
+                    // Copy the below tile into this one
+                    dst.Init(dst.X, dst.Y, src.Letter, src.Type);
+                    
+                    // Reset the below (now becomes empty)
+                    src.ResetCell();
+                    empty[x, below] = true;
+                    empty[x, y] = false;
+                }
+                else
+                {
+                    // Nothing below → assign fresh letter
+                    var dst = grid[x, y];
+                    dst.tileScore = 1;
+                    dst.Init(dst.X, dst.Y, GetRandomLetter(), TileType.Normal);
+                    empty[x, y] = false;
+                }
+
+                yield return new WaitForSeconds(0.2f); // smoother animation
+            }
         }
     }
-
-    yield return new WaitForSeconds(1f);
-
-    // Step 2: process each column
-    for (int x = 0; x < width; x++)
-    {
-        // Start from bottom going upward
-        for (int y = 0; y < height; y++)
-        {
-            if (!empty[x, y]) continue;
-
-            // Find next non-empty ABOVE
-            int above = y + 1;
-            while (above < height && empty[x, above]) above++;
-
-            if (above < height)
-            {
-                var src = grid[x, above];
-                var dst = grid[x, y];
-
-                if (src.Type == TileType.Normal) dst.tileScore = 1;
-
-                // Copy the above tile into this one
-                dst.Init(dst.X, dst.Y, src.Letter, src.Type);
-
-                // Reset the above (now becomes empty)
-                src.ResetCell();
-                empty[x, above] = true;
-                empty[x, y] = false;
-            }
-            else
-            {
-                // Nothing above → assign fresh letter
-                var dst = grid[x, y];
-                dst.tileScore = 1;
-                dst.Init(dst.X, dst.Y, GetRandomLetter(), TileType.Normal);
-                empty[x, y] = false;
-            }
-
-            yield return new WaitForSeconds(0.2f); // smoother animation
-        }
-    }
-}
 
 
 
 
     public void UnblockAdjacentsToPath(List<LetterTile> usedPath)
     {
-        HashSet<(int, int)> adj = new();
-        foreach (var t in usedPath)
-        {
-            for (int dx = -1; dx <= 1; dx++)
-                for (int dy = -1; dy <= 1; dy++)
-                {
-                    if (dx == 0 && dy == 0) continue;
-                    int nx = t.X + dx, ny = t.Y + dy;
-                    if (InBounds(nx, ny)) adj.Add((nx, ny));
-                }
-        }
+        HashSet<LetterTile> adjacents = new HashSet<LetterTile>();
+        
+        // Define only orthogonal directions (up, down, left, right)
+        int[] dx = { 0, 0, -1, 1 };
+        int[] dy = { -1, 1, 0, 0 };
 
-        foreach (var (x, y) in adj)
+        foreach (var tile in usedPath)
         {
-            var tile = grid[x, y];
-            if (tile != null && tile.Type == TileType.Blocked)
+            for (int i = 0; i < 4; i++)
             {
-                tile.Type = TileType.Normal;
+                int nx = tile.X + dx[i];
+                int ny = tile.Y + dy[i];
+                if (InBounds(nx, ny))
+                {
+                    var adjTile = grid[nx, ny];
+                    if (adjTile != null && adjTile.Type == TileType.Blocked)
+                    {
+                        adjacents.Add(adjTile);
+                    }
+                }
             }
+        }
+        print($"Unblocking {adjacents.Count} adjacent blocked tiles...");
+
+        foreach (var blockedTile in adjacents)
+        {
+            blockedTile.Type = TileType.Normal;
+            blockedTile.isBlocked = false;
+            blockedTile.UnBlockTile();
+            blockedTile.UpdateVisual();
         }
     }
 
@@ -207,7 +222,6 @@ public class GridManager : MonoBehaviour
     public List<int> GetRandomPositionForSpecialTile(int n, int x)
     {
 
-        //HashSet to make keep numbers unique
         var result = new HashSet<int>();
         var random = new System.Random();
 
