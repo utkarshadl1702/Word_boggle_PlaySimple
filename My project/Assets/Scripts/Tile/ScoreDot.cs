@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ScoreDot : MonoBehaviour
 {
-    // Start is called before the first frame update
+
     [SerializeField] private Image visSprite;
     private Color initialColor;
     void Awake()
@@ -12,7 +12,7 @@ public class ScoreDot : MonoBehaviour
         initialColor = visSprite.color;
     }
 
-    // Update is called once per frame
+    
     public void TurnOnOffSprite(bool shouldTurnOn)
     {
         if (shouldTurnOn)
@@ -26,8 +26,5 @@ public class ScoreDot : MonoBehaviour
             visSprite.color = initialColor;
         }
     }
-    void Update()
-    {
 
-    }
 }

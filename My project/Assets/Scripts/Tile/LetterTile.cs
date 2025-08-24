@@ -23,7 +23,7 @@ public class LetterTile : MonoBehaviour
 
 
 
-    // Grid coordinates managed by GridManager
+   
     public int X { get; set; }
     public int Y { get; set; }
 

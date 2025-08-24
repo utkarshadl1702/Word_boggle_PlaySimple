@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     {
         cam = Camera.main;
         // StartEndless(); // default
-        
+
         // if (levelDataContainer != null && levelDataContainer.data.Count > 0)
         //     StartLevel(Random.Range(0, levelDataContainer.data.Count));
 
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
         currentLevel = levelDataContainer.data[levelIndex];
         currentLevelIndex = levelIndex;
         numberOfBugs = currentLevel.bugCount;
-       
+
 
         // Load the grid with level data
         grid.LoadStaticGrid(currentLevel.gridData, currentLevel.gridSize.x, currentLevel.gridSize.y, numberOfBugs);
@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
             ui.SetTimer(levelTimer);
             if (levelTimer <= 0) CheckLevelEnd();
         }
-        if (mode == GameMode.Endless)
+        if (mode == GameMode.Endless && isLevelStarted)
         {
             ui.SetTimer(t);
             t += Time.deltaTime;
@@ -178,8 +178,8 @@ public class GameManager : MonoBehaviour
                     LevelWin();
                 break;
             default:
-                    if (timeUp)
-                        LevelWin();
+                if (timeUp)
+                    LevelWin();
                 break;
 
         }
@@ -254,11 +254,11 @@ public class GameManager : MonoBehaviour
 
 
 
-    // Menu hooks
+
     public void OnClick_Endless() => StartEndless();
     public void OnClick_Levels() => StartLevel(Random.Range(0, levelDataContainer.data.Count));
 
-    // Add method to go to next level
+    
     public void NextLevel()
     {
         //random number between 0-49

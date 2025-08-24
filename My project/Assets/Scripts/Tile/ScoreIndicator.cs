@@ -4,7 +4,7 @@ using System.Linq;
 
 public class ScoreIndicator : MonoBehaviour
 {
-    // Start is called before the first frame update
+
     [SerializeField] private List<ScoreDot> scoreDots = new List<ScoreDot>();
 
     void Start()
@@ -22,9 +22,5 @@ public class ScoreIndicator : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+   
 }

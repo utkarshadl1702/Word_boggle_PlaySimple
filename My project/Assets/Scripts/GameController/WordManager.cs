@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
+
 
 public class WordManager : MonoBehaviour
 {
     [Header("Dictionary")]
-    public TextAsset wordList; // put /Resources/wordList 
-    private string dictionaryPath;
+    public TextAsset wordList; 
     public List<string> foundWords;
 
     [Header("Scoring")] 
@@ -16,17 +15,13 @@ public class WordManager : MonoBehaviour
 
     private void Awake()
     {
-        // Store path to dictionary file
-        if (wordList != null)
-        {
-            dictionaryPath = Application.dataPath + "/Resources/" + wordList.name + ".txt";
-        }
-        else
+        
+        if (wordList == null)
         {
             Debug.LogWarning("WordManager: No wordList assigned; all words will be invalid.");
         }
 
-        // Initialize empty letter scores - will be set during runtime
+        
         letterScore = new Dictionary<char, int>();
     }
 
@@ -34,12 +29,12 @@ public class WordManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(word) || word.Length < 2) return false;
         if (foundWords.Contains(word)) return false; // Already found
-      
-        // Check word against dictionary file
-        if (File.Exists(dictionaryPath))
+
+        
+        if (wordList != null)
         {
             string upperWord = word.ToUpper();
-            foreach (string line in File.ReadLines(dictionaryPath))
+            foreach (string line in wordList.text.Split('\n'))
             {
                 if (line.Trim().ToUpper() == upperWord)
                     return true;

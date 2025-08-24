@@ -1,0 +1,9 @@
+com.DefaultCompany.Myproject.launcher-pngs-0 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/build/generated/res/pngs/release
+com.DefaultCompany.Myproject.launcher-resValues-1 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/build/generated/res/resValues/release
+com.DefaultCompany.Myproject.launcher-rs-2 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/build/generated/res/rs/release
+com.DefaultCompany.Myproject.launcher-mergeReleaseResources-3 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/build/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.DefaultCompany.Myproject.launcher-mergeReleaseResources-4 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/build/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.DefaultCompany.Myproject.launcher-merged_res-5 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/build/intermediates/merged_res/release
+com.DefaultCompany.Myproject.launcher-main-6 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/src/main/res
+com.DefaultCompany.Myproject.launcher-release-7 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/launcher/src/release/res
+com.DefaultCompany.Myproject.launcher-packaged_res-8 /Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/build/intermediates/packaged_res/release

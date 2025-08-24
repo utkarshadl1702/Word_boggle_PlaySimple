@@ -14,7 +14,7 @@ public class GridCell : MonoBehaviour
         if (!isSelected)
         {
             isSelected = true;
-            // Optional: change color for feedback
+            
             targetSprite.color = Color.yellow;
         }
     }

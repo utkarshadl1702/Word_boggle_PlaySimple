@@ -1,0 +1,19 @@
+<libraries>
+  <library
+      name="/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle@@:unityLibrary::release"
+      jars="/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/build/.transforms/7605e27d63baf99c6f4b9aef9602e504/transformed/out/jars/classes.jar:/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/build/.transforms/7605e27d63baf99c6f4b9aef9602e504/transformed/out/jars/libs/R.jar:/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/build/.transforms/7605e27d63baf99c6f4b9aef9602e504/transformed/out/jars/libs/unity-classes.jar"
+      resolved="Gradle:unityLibrary:unspecified"
+      folder="/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/build/.transforms/7605e27d63baf99c6f4b9aef9602e504/transformed/out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="__local_aars__:/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/libs/unity-classes.jar:unspecified@jar"
+      jars="/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/libs/unity-classes.jar"
+      resolved="__local_aars__:/Users/utkarshadlakha/Desktop/AI_Agent/Word_boggle_PlaySimple/My project/Library/Bee/Android/Prj/Mono2x/Gradle/unityLibrary/libs/unity-classes.jar:unspecified"/>
+</libraries>

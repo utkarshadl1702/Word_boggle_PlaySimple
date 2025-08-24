@@ -86,7 +86,7 @@ public class GridManager : MonoBehaviour
                 var tile = Instantiate(cellPrefab, transform).GetComponent<LetterTile>();
                 var d = data[i++];
                 if (bugPositions.Contains(i - 1) && d.tileType == 0)
-                    d.tileType = 2; // Make it a bug tile if it's not blocked or bonus already
+                    d.tileType = 2; 
 
                 if (blockPositions.Contains(i - 1) && d.tileType == 0)
                     d.tileType = 1;
@@ -110,7 +110,7 @@ public class GridManager : MonoBehaviour
 
         bool[,] empty = new bool[width, height];
 
-        // Step 1: mark empties
+        // Empty tiles
         foreach (var tile in tilesToRemove)
         {
             if (grid[tile.X, tile.Y] == tile)
@@ -130,7 +130,7 @@ public class GridManager : MonoBehaviour
             {
                 if (!empty[x, y]) continue;
 
-                // Find next non-empty BELOW
+                // Find next nonempty BELOW
                 int below = y - 1;
                 while (below >= 0 && empty[x, below]) below--;
 
@@ -151,7 +151,7 @@ public class GridManager : MonoBehaviour
                 }
                 else
                 {
-                    // Nothing below → assign fresh letter
+                    // Nothing below assign fresh letter
                     var dst = grid[x, y];
                     dst.tileScore = 1;
                     dst.Init(dst.X, dst.Y, GetRandomLetter(), TileType.Normal);
@@ -170,7 +170,7 @@ public class GridManager : MonoBehaviour
     {
         HashSet<LetterTile> adjacents = new HashSet<LetterTile>();
         
-        // Define only orthogonal directions (up, down, left, right)
+        
         int[] dx = { 0, 0, -1, 1 };
         int[] dy = { -1, 1, 0, 0 };
 

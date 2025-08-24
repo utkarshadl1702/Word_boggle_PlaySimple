@@ -2328,7 +2328,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1955729349}
   - component: {fileID: 1955729348}
-  - component: {fileID: 1955729347}
   - component: {fileID: 1955729346}
   - component: {fileID: 1955729345}
   - component: {fileID: 1955729350}
@@ -2373,18 +2372,6 @@ MonoBehaviour:
   timerText: {fileID: 795790812}
   levelPanel: {fileID: 1106357468}
   endlessPanel: {fileID: 918174177}
---- !u!114 &1955729347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1955729344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73d2c78f9ecaa481ba48d9b2e28ecd3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1955729348
 MonoBehaviour:
   m_ObjectHideFlags: 0
